@@ -6,7 +6,7 @@
 #   https://fedoraproject.org/wiki/User:Bkabrda/EPEL7_Python3#Specfiles.2C_Macros.2C_Packaging_Process
 # isn't actually working for me.
 
-%if 0%{?rhel} && 0%{?rhel} <= 7
+%if 0%{?rhel} && 0%{?rhel} < 7
 %bcond_with python3
 %else
 %bcond_without python3
@@ -14,7 +14,7 @@
 
 Name:           python-attrs
 Version:        16.0.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
@@ -31,15 +31,22 @@ Patch1:         %{modname}-16.0.0-skiptests.patch
 
 %if 0%{?rhel} && 0%{?rhel} <= 7
 BuildRequires:  python-devel python-setuptools
+# Can't run tests on EPEL7 due to need for pytest >= 2.8
 %else
 BuildRequires:  python2-devel python2-setuptools
-BuildRequires:  python2-pytest python-zope-interface
+BuildRequires:  python2-pytest python2-hypothesis python-zope-interface
 %endif
-BuildRequires:  python2-hypothesis
 
 %if %{with python3}
-BuildRequires:  python3-devel python3-setuptools python3-hypothesis
-BuildRequires:  python3-pytest python3-zope-interface
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+%if 0%{?rhel} && 0%{?rhel} <= 7
+# can't run tests on EPEL7 because we don't yet have python3x-zope-interface
+%else
+BuildRequires:  python%{python3_pkgversion}-pytest
+BuildRequires:  python%{python3_pkgversion}-hypothesis
+BuildRequires:  python%{python3_pkgversion}-zope-interface
+%endif
 %endif
 
 %description
@@ -59,9 +66,9 @@ object protocols.
 %if %{with python3}
 %package -n python%{python3_pkgversion}-%{modname}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{modname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
 
-%description -n python3-%{modname}
+%description -n python%{python3_pkgversion}-%{modname}
 attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
 object protocols.
@@ -101,13 +108,16 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python2_sitelib}/*
 
 %if %{with python3}
-%files -n python3-%{modname}
+%files -n python%{python3_pkgversion}-%{modname}
 %license LICENSE
 %doc AUTHORS.rst README.rst
 %{python3_sitelib}/*
 %endif
 
 %changelog
+* Thu Aug 18 2016 Eric Smith <brouhaha@fedoraproject.org> 16.0.0-6
+- Build for Python 3.4 in EPEL7.
+
 * Thu Aug 18 2016 Eric Smith <brouhaha@fedoraproject.org> 16.0.0-5
 - Updated based on Fedora package review (#1366878).
 - Fix check section, though tests can not be run for EPEL7.
