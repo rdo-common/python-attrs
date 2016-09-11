@@ -1,32 +1,14 @@
 %global modname attrs
 
-# can't yet build python3 package for EPEL7
-# Python 3.5 is available in EPEL7, but as of 2016-08-14, packaging guidelines
-# aren't up to date, and example spec at
-#   https://fedoraproject.org/wiki/User:Bkabrda/EPEL7_Python3#Specfiles.2C_Macros.2C_Packaging_Process
-# isn't actually working for me.
-
-%if 0%{?rhel} && 0%{?rhel} < 7
-%bcond_with python3
-%else
-%bcond_without python3
-%endif
-
 Name:           python-attrs
-Version:        16.0.0
-Release:        6%{?dist}
+Version:        16.1.0
+Release:        1%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
 URL:            https://attrs.readthedocs.io/
 BuildArch:      noarch
 Source0:        https://github.com/hynek/%{modname}/archive/%{version}/%{modname}-%{version}.tar.gz
-
-# Patch two skip two tests with keyword collisions, fixed upstream in git,
-# so patch won't be necessary in 16.1.0 and later
-# https://github.com/hynek/attrs/issues/65
-# https://github.com/hynek/attrs/commit/d10e5c41d614f8ca7b1b7a7c7a98f9dbe2d2b6fc
-Patch1:         %{modname}-16.0.0-skiptests.patch
 
 
 %if 0%{?rhel} && 0%{?rhel} <= 7
@@ -37,7 +19,6 @@ BuildRequires:  python2-devel python2-setuptools
 BuildRequires:  python2-pytest python2-hypothesis python-zope-interface
 %endif
 
-%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %if 0%{?rhel} && 0%{?rhel} <= 7
@@ -46,7 +27,6 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-hypothesis
 BuildRequires:  python%{python3_pkgversion}-zope-interface
-%endif
 %endif
 
 %description
@@ -63,7 +43,6 @@ attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
 object protocols.
 
-%if %{with python3}
 %package -n python%{python3_pkgversion}-%{modname}
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
@@ -72,24 +51,18 @@ Summary:        %{summary}
 attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
 object protocols.
-%endif
 
 %prep
 %setup -q -n %{modname}-%{version}
-%patch1 -p1 -b .skiptests
 
 %build
 %py2_build
-%if %{with python3}
 %py3_build
-%endif
 
 %install
 # Doesn't install anything to /usr/bin, so I don't think the order of
 # installing python2 and python3 actually matters.
-%if %{with python3}
 %py3_install
-%endif
 %py2_install
 
 %check
@@ -97,9 +70,7 @@ object protocols.
 # Can't run tests on EPEL7 due to need for pytest >= 2.8
 %else
 PYTHONPATH=%{buildroot}/%{python2_sitelib} py.test-2.7 -v
-%if %{with python3}
 PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
-%endif
 %endif
 
 %files -n python2-%{modname}
@@ -107,14 +78,17 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %doc AUTHORS.rst README.rst
 %{python2_sitelib}/*
 
-%if %{with python3}
 %files -n python%{python3_pkgversion}-%{modname}
 %license LICENSE
 %doc AUTHORS.rst README.rst
 %{python3_sitelib}/*
-%endif
 
 %changelog
+* Sat Sep 10 2016 Eric Smith <brouhaha@fedoraproject.org> 16.1.0-1
+- Updated to latest upstream.
+- Removed patch, no longer necessary.
+- Removed "with python3" conditionals.
+
 * Thu Aug 18 2016 Eric Smith <brouhaha@fedoraproject.org> 16.0.0-6
 - Build for Python 3.4 in EPEL7.
 
