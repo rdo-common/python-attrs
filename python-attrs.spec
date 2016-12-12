@@ -24,9 +24,9 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 %if 0%{?rhel} && 0%{?rhel} <= 7
 # can't run tests on EPEL7 because we don't yet have python3x-zope-interface
 %else
-BuildRequires:  python%{python3_pkgversion}-pytest
-BuildRequires:  python%{python3_pkgversion}-hypothesis
-BuildRequires:  python%{python3_pkgversion}-zope-interface
+#BuildRequires:  python%{python3_pkgversion}-pytest
+#BuildRequires:  python%{python3_pkgversion}-hypothesis
+#BuildRequires:  python%{python3_pkgversion}-zope-interface
 %endif
 
 %description
@@ -70,7 +70,7 @@ object protocols.
 # Can't run tests on EPEL7 due to need for pytest >= 2.8
 %else
 PYTHONPATH=%{buildroot}/%{python2_sitelib} py.test-2.7 -v
-PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
+#PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %endif
 
 %files -n python2-%{modname}
@@ -84,6 +84,10 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Mon Dec 12 2016 Charalampos Stratakis <cstratak@redhat.com> - 16.1.0-2
+- Rebuild for Python 3.6
+- Disable python3 tests for now
+
 * Sat Sep 10 2016 Eric Smith <brouhaha@fedoraproject.org> 16.1.0-1
 - Updated to latest upstream.
 - Removed patch, no longer necessary.
