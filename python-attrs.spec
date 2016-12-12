@@ -2,7 +2,7 @@
 
 Name:           python-attrs
 Version:        16.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
