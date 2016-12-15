@@ -1,8 +1,8 @@
 %global modname attrs
 
 Name:           python-attrs
-Version:        16.1.0
-Release:        3%{?dist}
+Version:        16.3.0
+Release:        1%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
@@ -84,6 +84,9 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Wed Dec 14 2016 Eric Smith <brouhaha@fedoraproject.org> 16.3.0-1
+- Updated to latest upstream.
+
 * Tue Dec 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 16.1.0-3
 - Enable tests
 
