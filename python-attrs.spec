@@ -2,7 +2,7 @@
 
 Name:           python-attrs
 Version:        16.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
@@ -84,6 +84,9 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.3.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Wed Dec 14 2016 Eric Smith <brouhaha@fedoraproject.org> 16.3.0-1
 - Updated to latest upstream.
 
