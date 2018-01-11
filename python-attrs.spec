@@ -1,12 +1,12 @@
 %global modname attrs
 
 Name:           python-attrs
-Version:        16.3.0
-Release:        3%{?dist}
+Version:        17.4.0
+Release:        1%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
-URL:            https://attrs.readthedocs.io/
+URL:            http://www.attrs.org/
 BuildArch:      noarch
 Source0:        https://github.com/hynek/%{modname}/archive/%{version}/%{modname}-%{version}.tar.gz
 
@@ -84,6 +84,9 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Thu Jan 11 2018 Eric Smith <brouhaha@fedoraproject.org> 17.4.0-1
+- Updated to latest upstream.
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 16.3.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
