@@ -2,7 +2,7 @@
 
 Name:           python-attrs
 Version:        17.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
@@ -11,12 +11,17 @@ BuildArch:      noarch
 Source0:        https://github.com/hynek/%{modname}/archive/%{version}/%{modname}-%{version}.tar.gz
 
 
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
 %if 0%{?rhel} && 0%{?rhel} <= 7
-BuildRequires:  python-devel python-setuptools
 # Can't run tests on EPEL7 due to need for pytest >= 2.8
 %else
-BuildRequires:  python2-devel python2-setuptools
-BuildRequires:  python2-pytest python2-hypothesis python-zope-interface
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+BuildRequires:  python2-pytest
+BuildRequires:  python2-hypothesis
+BuildRequires:  python2-six
+BuildRequires:  python-zope-interface
 %endif
 
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -26,6 +31,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 %else
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-hypothesis
+BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-zope-interface
 %endif
 
@@ -84,6 +90,9 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Wed Jan 17 2018 Eric Smith <brouhaha@fedoraproject.org> 17.4.0-2
+- Added BuildRequires for python<n>-six.
+
 * Thu Jan 11 2018 Eric Smith <brouhaha@fedoraproject.org> 17.4.0-1
 - Updated to latest upstream.
 
