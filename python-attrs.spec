@@ -2,7 +2,7 @@
 
 Name:           python-attrs
 Version:        17.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Python attributes without boilerplate
 
 License:        MIT
@@ -11,8 +11,8 @@ BuildArch:      noarch
 Source0:        https://github.com/hynek/%{modname}/archive/%{version}/%{modname}-%{version}.tar.gz
 
 
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
 %if 0%{?rhel} && 0%{?rhel} <= 7
 # Can't run tests on EPEL7 due to need for pytest >= 2.8
 %else
@@ -21,7 +21,7 @@ BuildRequires:  python2-setuptools
 BuildRequires:  python2-pytest
 BuildRequires:  python2-hypothesis
 BuildRequires:  python2-six
-BuildRequires:  python-zope-interface
+BuildRequires:  python2-zope-interface
 %endif
 
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -90,6 +90,10 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %{python3_sitelib}/*
 
 %changelog
+* Wed Feb 21 2018 Iryna Shcherbina <ishcherb@redhat.com> - 17.4.0-4
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 17.4.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
