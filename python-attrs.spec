@@ -1,5 +1,13 @@
 %global modname attrs
 
+%if 0%{?rhel} && 0%{?rhel} <= 7
+# Can't run tests on EPEL7 due to need for pytest >= 2.8
+%bcond_with tests
+%else
+# Turn the tests off when bootstrapping Python, because pytest requires attrs
+%bcond_without tests
+%endif
+
 Name:           python-attrs
 Version:        17.4.0
 Release:        4%{?dist}
@@ -13,9 +21,7 @@ Source0:        https://github.com/hynek/%{modname}/archive/%{version}/%{modname
 
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-%if 0%{?rhel} && 0%{?rhel} <= 7
-# Can't run tests on EPEL7 due to need for pytest >= 2.8
-%else
+%if %{with tests}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 BuildRequires:  python2-pytest
@@ -26,9 +32,7 @@ BuildRequires:  python2-zope-interface
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-%if 0%{?rhel} && 0%{?rhel} <= 7
-# can't run tests on EPEL7 because we don't yet have python3x-zope-interface
-%else
+%if %{with tests}
 BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-hypothesis
 BuildRequires:  python%{python3_pkgversion}-six
@@ -71,10 +75,8 @@ object protocols.
 %py3_install
 %py2_install
 
+%if %{with tests}
 %check
-%if 0%{?rhel} && 0%{?rhel} <= 7
-# Can't run tests on EPEL7 due to need for pytest >= 2.8
-%else
 PYTHONPATH=%{buildroot}/%{python2_sitelib} py.test-2.7 -v
 PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %endif
