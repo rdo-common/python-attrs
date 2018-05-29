@@ -1,5 +1,9 @@
 %global modname attrs
 
+%if 0%{?fedora}
+%global with_python3 1
+%endif
+
 %if 0%{?rhel} && 0%{?rhel} <= 7
 # Can't run tests on EPEL7 due to need for pytest >= 2.8
 %bcond_with tests
@@ -30,15 +34,6 @@ BuildRequires:  python2-six
 BuildRequires:  python2-zope-interface
 %endif
 
-BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-setuptools
-%if %{with tests}
-BuildRequires:  python%{python3_pkgversion}-pytest
-BuildRequires:  python%{python3_pkgversion}-hypothesis
-BuildRequires:  python%{python3_pkgversion}-six
-BuildRequires:  python%{python3_pkgversion}-zope-interface
-%endif
-
 %description
 attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
@@ -53,32 +48,49 @@ attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
 object protocols.
 
+%if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-%{modname}
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{modname}}
+
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+%if %{with tests}
+BuildRequires:  python%{python3_pkgversion}-pytest
+BuildRequires:  python%{python3_pkgversion}-hypothesis
+BuildRequires:  python%{python3_pkgversion}-six
+BuildRequires:  python%{python3_pkgversion}-zope-interface
+%endif
 
 %description -n python%{python3_pkgversion}-%{modname}
 attrs is an MIT-licensed Python package with class decorators that
 ease the chores of implementing the most common attribute-related
 object protocols.
+%endif
 
 %prep
 %setup -q -n %{modname}-%{version}
 
 %build
 %py2_build
+%if 0%{?with_python3}
 %py3_build
+%endif
 
 %install
 # Doesn't install anything to /usr/bin, so I don't think the order of
 # installing python2 and python3 actually matters.
+%if 0%{?with_python3}
 %py3_install
+%endif
 %py2_install
 
 %if %{with tests}
 %check
 PYTHONPATH=%{buildroot}/%{python2_sitelib} py.test-2.7 -v
+%if 0%{?with_python3}
 PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
+%endif
 %endif
 
 %files -n python2-%{modname}
@@ -86,10 +98,12 @@ PYTHONPATH=%{buildroot}/%{python3_sitelib} py.test-3 -v
 %doc AUTHORS.rst README.rst
 %{python2_sitelib}/*
 
+%if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-%{modname}
 %license LICENSE
 %doc AUTHORS.rst README.rst
 %{python3_sitelib}/*
+%endif
 
 %changelog
 * Wed Feb 21 2018 Iryna Shcherbina <ishcherb@redhat.com> - 17.4.0-4
